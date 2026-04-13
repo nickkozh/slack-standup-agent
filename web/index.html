@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Standup Agent - AI-Powered Blocker Detection</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        .hero p {
+            font-size: 1.25rem;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+        .badge-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        .badge {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #38bdf8;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .badge.purple { background: rgba(192, 132, 252, 0.1); border-color: rgba(192, 132, 252, 0.3); color: #c084fc; }
+        .badge.green { background: rgba(52, 211, 153, 0.1); border-color: rgba(52, 211, 153, 0.3); color: #34d399; }
+
+        /* Steps */
+        .steps {
+            display: flex;
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+        }
+        .step {
+            flex: 1;
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid #334155;
+        }
+        .step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            color: white;
+        }
+        .step h3 { margin-bottom: 8px; font-size: 1.1rem; }
+        .step p { color: #94a3b8; font-size: 0.9rem; line-height: 1.5; }
+
+        /* Features */
+        .features {
+            max-width: 900px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+        }
+        .features h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 32px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .feature {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #334155;
+        }
+        .feature h4 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .feature p { color: #94a3b8; font-size: 0.85rem; line-height: 1.5; }
+
+        /* Demo */
+        .demo {
+            max-width: 900px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+        }
+        .demo h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+        .demo-subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 32px;
+        }
+        .demo-container {
+            background: #1e293b;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            overflow: hidden;
+        }
+        .demo-input {
+            padding: 24px;
+            border-bottom: 1px solid #334155;
+        }
+        .demo-input label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+        }
+        .demo-input textarea {
+            width: 100%;
+            min-height: 100px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px;
+            color: #e2e8f0;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+        }
+        .demo-input textarea:focus {
+            outline: none;
+            border-color: #38bdf8;
+        }
+        .demo-input .author-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+            align-items: center;
+        }
+        .demo-input input[type="text"] {
+            flex: 1;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: #e2e8f0;
+            font-family: inherit;
+        }
+        .demo-input input:focus { outline: none; border-color: #38bdf8; }
+        .demo-btn {
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: opacity 0.2s;
+        }
+        .demo-btn:hover { opacity: 0.9; }
+        .demo-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .demo-output {
+            padding: 24px;
+            min-height: 200px;
+        }
+        .demo-output h3 {
+            margin-bottom: 16px;
+            color: #cbd5e1;
+        }
+
+        /* Result cards */
+        .result-empty { color: #64748b; font-style: italic; }
+        .result-loading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #94a3b8;
+        }
+        .spinner {
+            width: 20px; height: 20px;
+            border: 2px solid #334155;
+            border-top-color: #38bdf8;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .blocker-card {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid #f59e0b;
+        }
+        .blocker-card.high { border-left-color: #dc2626; }
+        .blocker-card.low { border-left-color: #3b82f6; }
+        .blocker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .urgency-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .urgency-badge.high { background: rgba(220, 38, 38, 0.2); color: #f87171; }
+        .urgency-badge.medium { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .urgency-badge.low { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .blocker-desc { margin-bottom: 8px; line-height: 1.4; }
+        .blocker-meta { color: #64748b; font-size: 0.85rem; }
+        .blocker-meta span { margin-right: 16px; }
+
+        .no-blockers {
+            background: rgba(52, 211, 153, 0.1);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            color: #34d399;
+            text-align: center;
+        }
+
+        .email-preview {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            border: 1px solid #334155;
+        }
+        .email-preview h4 {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+        .email-to { color: #38bdf8; font-size: 0.9rem; margin-bottom: 4px; }
+        .email-subject { color: #e2e8f0; font-weight: 600; margin-bottom: 8px; }
+        .email-body { color: #94a3b8; font-size: 0.85rem; line-height: 1.5; border-top: 1px solid #334155; padding-top: 8px; }
+
+        .vault-preview {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            border: 1px solid rgba(192, 132, 252, 0.3);
+        }
+        .vault-preview h4 { color: #c084fc; font-size: 0.85rem; margin-bottom: 8px; }
+        .vault-json {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        /* Architecture */
+        .architecture {
+            max-width: 900px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+        }
+        .architecture h2 { text-align: center; font-size: 2rem; margin-bottom: 32px; }
+        .arch-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding: 32px;
+            background: #1e293b;
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+        .arch-node {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .arch-node.slack { border-color: #4A154B; }
+        .arch-node.claude { border-color: #d4a574; }
+        .arch-node.inkbox { border-color: #38bdf8; }
+        .arch-node.vault { border-color: #c084fc; }
+        .arch-node small { display: block; color: #64748b; font-size: 0.75rem; }
+        .arch-arrow { color: #475569; font-size: 1.5rem; }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #475569;
+            font-size: 0.85rem;
+            border-top: 1px solid #1e293b;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .steps { flex-direction: column; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .arch-flow { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero -->
+    <section class="hero">
+        <h1>Standup Agent</h1>
+        <p>AI-powered standup monitoring. Detects blockers instantly, emails the right people, and escalates what's stuck.</p>
+        <div class="badge-row">
+            <span class="badge">Slack Integration</span>
+            <span class="badge purple">Claude AI Parsing</span>
+            <span class="badge green">Inkbox Email + Vault</span>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="steps">
+        <div class="step">
+            <div class="step-num">1</div>
+            <h3>Connect Slack</h3>
+            <p>Point the agent at your standup channel. It listens in real-time via Socket Mode — no webhooks, no public URLs.</p>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <h3>Map Your Team</h3>
+            <p>Add team members and their emails. The agent fuzzy-matches names from standup messages to the right people.</p>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <h3>Never Miss a Blocker</h3>
+            <p>Claude parses every standup, detects blockers, emails affected people, and replies in-thread with a summary.</p>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <h2>Features</h2>
+        <div class="feature-grid">
+            <div class="feature">
+                <h4>🔍 Intelligent Parsing</h4>
+                <p>Claude Sonnet analyzes standup messages with contextual understanding. Distinguishes real blockers from status updates, assigns urgency levels, and categorizes by type.</p>
+            </div>
+            <div class="feature">
+                <h4>📧 Instant Email Alerts</h4>
+                <p>Affected team members get styled HTML emails via Inkbox within seconds. Includes blocker details, urgency, category, and the action they need to take.</p>
+            </div>
+            <div class="feature">
+                <h4>🔐 Vault History</h4>
+                <p>Every blocker is stored in Inkbox Vault with full metadata. Daily indices enable time-based queries and resolution tracking.</p>
+            </div>
+            <div class="feature">
+                <h4>🚨 Priority Escalation</h4>
+                <p>Unresolved blockers older than your threshold (default: 24h) automatically escalate to the team lead with a summary table.</p>
+            </div>
+            <div class="feature">
+                <h4>💬 Thread Replies</h4>
+                <p>The agent replies directly in the Slack thread with detected blockers, who was notified, and any escalations — immediate visibility for the whole team.</p>
+            </div>
+            <div class="feature">
+                <h4>🏷 Smart Categorization</h4>
+                <p>Blockers are categorized as design, engineering, devops, review, decision, or external — making it easy to filter and route.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Demo -->
+    <section class="demo">
+        <h2>Try It Live</h2>
+        <p class="demo-subtitle">Paste a standup message and see how the agent parses it. No API keys needed — runs client-side simulation.</p>
+        <div class="demo-container">
+            <div class="demo-input">
+                <label>Standup Message</label>
+                <textarea id="standup-input" placeholder="Example: Yesterday I finished the login page. Today working on the dashboard. Blocked on Sarah for the design mockups — need them ASAP to hit Friday's deadline. Also waiting on Jake to review my PR #142.">Yesterday I finished the login page. Today working on the dashboard. Blocked on Sarah for the design mockups — need them ASAP to hit Friday's deadline. Also waiting on Jake to review my PR #142.</textarea>
+                <div class="author-row">
+                    <input type="text" id="author-input" placeholder="Author name" value="Alex Chen">
+                    <button class="demo-btn" id="parse-btn" onclick="runDemo()">Analyze Standup</button>
+                </div>
+            </div>
+            <div class="demo-output" id="demo-output">
+                <h3>Analysis Results</h3>
+                <p class="result-empty">Click "Analyze Standup" to see the agent in action</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture -->
+    <section class="architecture">
+        <h2>Architecture</h2>
+        <div class="arch-flow">
+            <div class="arch-node slack">
+                <strong>Slack</strong>
+                <small>Socket Mode</small>
+            </div>
+            <span class="arch-arrow">→</span>
+            <div class="arch-node">
+                <strong>Agent</strong>
+                <small>Python</small>
+            </div>
+            <span class="arch-arrow">→</span>
+            <div class="arch-node claude">
+                <strong>Claude</strong>
+                <small>Blocker Detection</small>
+            </div>
+            <span class="arch-arrow">→</span>
+            <div class="arch-node inkbox">
+                <strong>Inkbox Email</strong>
+                <small>Notifications</small>
+            </div>
+            <span class="arch-arrow">+</span>
+            <div class="arch-node vault">
+                <strong>Inkbox Vault</strong>
+                <small>History + Escalation</small>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        Built for the Inkbox Hackathon &mdash; Powered by Claude, Inkbox, and Slack
+    </footer>
+
+    <script>
+    function runDemo() {
+        const text = document.getElementById('standup-input').value.trim();
+        const author = document.getElementById('author-input').value.trim() || 'Unknown';
+        const output = document.getElementById('demo-output');
+        const btn = document.getElementById('parse-btn');
+
+        if (!text) return;
+
+        btn.disabled = true;
+        btn.textContent = 'Analyzing...';
+        output.innerHTML = '<h3>Analysis Results</h3><div class="result-loading"><div class="spinner"></div> Claude is parsing the standup message...</div>';
+
+        // Simulate Claude parsing (client-side heuristic for demo)
+        setTimeout(() => {
+            const result = simulateParse(text, author);
+            renderResult(result, text);
+            btn.disabled = false;
+            btn.textContent = 'Analyze Standup';
+        }, 1500);
+    }
+
+    function simulateParse(text, author) {
+        const blockerPatterns = [
+            /blocked (?:on|by) (\w+[\w\s]*?)(?:\s+(?:for|on|to|-|—))\s+(.+?)(?:\.|$|,|;)/gi,
+            /waiting (?:on|for) (\w+[\w\s]*?)(?:\s+to)\s+(.+?)(?:\.|$|,|;)/gi,
+            /need (\w+[\w\s]*?)(?:\s+(?:for|to))\s+(.+?)(?:\.|$|,|;)/gi,
+        ];
+
+        const blockers = [];
+        const lowerText = text.toLowerCase();
+
+        for (const pattern of blockerPatterns) {
+            let match;
+            while ((match = pattern.exec(text)) !== null) {
+                const person = match[1].trim();
+                const desc = match[2].trim();
+
+                const urgency = (lowerText.includes('asap') || lowerText.includes('urgent') || lowerText.includes('critical') || lowerText.includes('deadline'))
+                    ? 'high'
+                    : (lowerText.includes('waiting') ? 'medium' : 'low');
+
+                const category = desc.toLowerCase().includes('design') ? 'design'
+                    : desc.toLowerCase().includes('review') || desc.toLowerCase().includes('pr') ? 'review'
+                    : desc.toLowerCase().includes('deploy') || desc.toLowerCase().includes('ci') ? 'devops'
+                    : 'engineering';
+
+                blockers.push({
+                    description: `${person} needs to provide: ${desc}`,
+                    mentioned_people: [person],
+                    urgency,
+                    action_needed: desc.charAt(0).toUpperCase() + desc.slice(1),
+                    category
+                });
+            }
+        }
+
+        // Deduplicate by person
+        const seen = new Set();
+        const unique = blockers.filter(b => {
+            const key = b.mentioned_people[0]?.toLowerCase();
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+
+        return {
+            has_blockers: unique.length > 0,
+            author_name: author,
+            blockers: unique,
+            summary: unique.length > 0
+                ? `${author} has ${unique.length} blocker(s) requiring team action`
+                : `${author}'s standup — no blockers detected`
+        };
+    }
+
+    function renderResult(result, originalText) {
+        const output = document.getElementById('demo-output');
+        let html = '<h3>Analysis Results</h3>';
+
+        if (!result.has_blockers) {
+            html += '<div class="no-blockers">No blockers detected. Summary: ' + result.summary + '</div>';
+            output.innerHTML = html;
+            return;
+        }
+
+        // Blocker cards
+        for (const b of result.blockers) {
+            const urgClass = b.urgency;
+            html += `
+            <div class="blocker-card ${urgClass}">
+                <div class="blocker-header">
+                    <strong>${b.description}</strong>
+                    <span class="urgency-badge ${urgClass}">${b.urgency}</span>
+                </div>
+                <div class="blocker-desc">${b.action_needed}</div>
+                <div class="blocker-meta">
+                    <span>👤 ${b.mentioned_people.join(', ')}</span>
+                    <span>🏷 ${b.category}</span>
+                </div>
+            </div>`;
+        }
+
+        // Slack thread preview
+        html += `
+        <div class="email-preview" style="border-left: 4px solid #4A154B;">
+            <h4>💬 Slack Thread Reply Preview</h4>
+            <div style="color: #e2e8f0; font-size: 0.9rem; line-height: 1.6;">
+                <strong>Standup Agent detected ${result.blockers.length} blocker(s):</strong><br>`;
+        for (let i = 0; i < result.blockers.length; i++) {
+            const b = result.blockers[i];
+            const emoji = b.urgency === 'high' ? '🔴' : b.urgency === 'medium' ? '🟠' : '🔵';
+            html += `${emoji} <strong>Blocker ${i+1}:</strong> ${b.description}<br>`;
+            html += `&nbsp;&nbsp;&nbsp;<em>Assigned to:</em> ${b.mentioned_people.join(', ')} | <em>Action:</em> ${b.action_needed}<br>`;
+        }
+        html += `<br>📧 <strong>Notified via email:</strong> ${result.blockers.flatMap(b => b.mentioned_people).join(', ')}<br>`;
+        html += `<br>🔒 <em>Blocker history saved to Inkbox Vault</em>`;
+        html += `</div></div>`;
+
+        // Email preview
+        for (const b of result.blockers) {
+            for (const person of b.mentioned_people) {
+                const urgLabel = b.urgency.toUpperCase();
+                html += `
+                <div class="email-preview">
+                    <h4>📧 Email Preview (via Inkbox)</h4>
+                    <div class="email-to">To: ${person.toLowerCase().replace(' ', '.')}@company.com</div>
+                    <div class="email-subject">Standup Blocker Alert: ${result.author_name} is blocked</div>
+                    <div class="email-body">
+                        <strong>[${urgLabel}] Blocker Detected</strong><br><br>
+                        ${result.author_name} flagged a blocker that involves you:<br><br>
+                        <em>"${b.description}"</em><br><br>
+                        <strong>Category:</strong> ${b.category} | <strong>Urgency:</strong> ${urgLabel}<br>
+                        <strong>Action needed from you:</strong> ${b.action_needed}
+                    </div>
+                </div>`;
+            }
+        }
+
+        // Vault preview
+        const vaultRecord = {
+            id: Math.random().toString(36).substr(2, 16),
+            author: result.author_name,
+            description: result.blockers[0].description,
+            urgency: result.blockers[0].urgency,
+            category: result.blockers[0].category,
+            mentioned_people: result.blockers[0].mentioned_people,
+            created_at: new Date().toISOString(),
+            resolved: false,
+            escalated: false
+        };
+        html += `
+        <div class="vault-preview">
+            <h4>🔐 Inkbox Vault Record</h4>
+            <div class="vault-json">${JSON.stringify(vaultRecord, null, 2)}</div>
+        </div>`;
+
+        output.innerHTML = html;
+    }
+    </script>
+</body>
+</html>
