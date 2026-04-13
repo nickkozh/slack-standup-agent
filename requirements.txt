@@ -1,0 +1,5 @@
+slack-bolt>=1.21.0
+slack-sdk>=3.33.0
+anthropic>=0.42.0
+inkbox>=0.2.10
+python-dotenv>=1.0.0
